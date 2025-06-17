@@ -1,6 +1,6 @@
 FROM python:3.13 AS builder
 
-ARG CYBERDROP_DL_VERSION
+ARG CYBERDROP_DL_VERSION="6.10.1"
 ARG TARGETARCH
 ARG FIXUID_VERSION="0.6.0"
 ARG GOTTY_VERSION="1.5.0"
@@ -35,7 +35,7 @@ COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 RUN apt-get update && \
-    apt-get -y install --no-install-recommends tmux && \
+    apt-get -y install --no-install-recommends tmux nano cron && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -46,8 +46,6 @@ USER "${APP_USER}:${APP_USER}"
 
 WORKDIR /cyberdrop-dl
 COPY --from=builder /cyberdrop-dl /cyberdrop-dl
-
+ADD --chmod=755 silent_run.sh /cyberdrop-dl/silent_run.sh
 ADD --chmod=755 entrypoint.sh /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
-
-CMD ["cyberdrop-dl"]
+ENTRYPOINT ["/entrypoint.sh"]
