@@ -31,7 +31,7 @@ docker run -it \
 services:
   cdl-docker:
     container_name: cdl-docker
-    image: elmexy/cdl-docker:lastest
+    image: ghcr.io/elmexy/cdl-docker:lastest
     #user: ${FIXUID:-0}:${FIXGID:-0}
     volumes:
       - ./AppData:/cyberdrop-dl/AppData
