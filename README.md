@@ -2,17 +2,20 @@
 # Unofficial CyberDropDownloader Docker Image
 
 ## Before proceeding
-This is ENTIRELY unofficial. Do NOT ask for support from the dev(s) of cyberdrop-dl-patched.
+This is ENTIRELY unofficial. Do NOT ask for support from the dev(s) of cyberdrop-dl-patched. With some added features. 
+  
+  ADDED
+   - nano. So you can edit files
+   - cron. For scheduling
 
+ Removed
+  - Web TTY Gotty
 
-### GHCR / Dockerhub Repos (amd64/arm64)
+### GHCR Repos (amd64)
 ```
 docker pull ghcr.io/elmexy/cdl-docker:latest
 ```
 
-```
-docker pull elmexy/cdl-docker:latest
-```
 
 ## Docker run command
 
@@ -21,7 +24,7 @@ docker run -it \
   --name cdl-docker \
   -v $(pwd)/AppData:/cyberdrop-dl/AppData \
   -v $(pwd)/Downloads:/cyberdrop-dl/Downloads \
-  ne0lith/cdl-docker:latest \
+  ghcr.io/elmexy/cdl-docker:latest \
   cyberdrop-dl
 ```
 
@@ -37,7 +40,7 @@ services:
       - ./AppData:/cyberdrop-dl/AppData
       - ./Downloads:/cyberdrop-dl/Downloads
     environment:
-      - TZ=America/Vancouver
+      - TZ=Etc/UTC
       - SCHEDULE=ON
       - TIME=15 */6 * * *
       - SETUP=no
@@ -45,6 +48,13 @@ services:
     stdin_open: true
     tty: true
 ```
+| Parameter | Function | Defult |
+| :----: | --- | ---- |
+| `TZ` | specify a timezone to use, see this [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List). | Etc/UTC |
+| `SCHEDULE` | Used if you want to run a certan time. | OFF |
+| `TIME` | Set crontab schedule | 0 0 * * * (if SCHEDULE ON) |
+| `SETUP` | Runs CyberDropDownloader on start of contaner. Used for first time setup | NO |
+
 
 
 
