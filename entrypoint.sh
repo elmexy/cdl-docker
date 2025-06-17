@@ -1,15 +1,18 @@
 #!/bin/bash
-set -e
-
-# adjust permissions with fixuid if needed
-if [[ "$GOTTY" == "true" ]]; then
-	# run app in background
-	fixuid -q tmux new -d -s gotty "$@"
-
-	# WebTTY connects to tmux
-	gotty tmux new -A -s gotty &
-	# if no tmux channel then cleanup
-	tmux wait gotty && kill $!
+if [[ "$SCHEDULE" == "ON" ]]; then
+if [[ "$TIME" == "" ]]; then
+echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/cron.d/cdl-autorun
+echo "0 0 * * * root /cyberdrop-dl/silent_run.sh > /proc/1/fd/1 2>&1" >> /etc/cron.d/cdl-autorun
 else
-	exec fixuid -q "$@"
+echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/cron.d/cdl-autorun
+echo "$TIME root /cyberdrop-dl/silent_run.sh > /proc/1/fd/1 2>&1" >> /etc/cron.d/cdl-autorun
 fi
+chmod 777 /cyberdrop-dl/silent_run.sh
+cron
+fi
+if [[ "$SETUP" == "YES" ]]; then
+cd /cyberdrop-dl
+cyberdrop-dl
+exit
+fi
+exec /bin/bash
