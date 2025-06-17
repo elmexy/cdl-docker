@@ -7,11 +7,11 @@ This is ENTIRELY unofficial. Do NOT ask for support from the dev(s) of cyberdrop
 
 ### GHCR / Dockerhub Repos (amd64/arm64)
 ```
-docker pull ghcr.io/ne0lith/cdl-docker:latest
+docker pull ghcr.io/elmexy/cdl-docker:latest
 ```
 
 ```
-docker pull ne0lith/cdl-docker:latest
+docker pull elmexy/cdl-docker:latest
 ```
 
 ## Docker run command
@@ -28,43 +28,25 @@ docker run -it \
 ## Docker-Compose configuration
 
 ```yaml
-version: '3'
-
 services:
   cdl-docker:
     container_name: cdl-docker
-    image: ne0lith/cdl-docker:latest
+    image: elmexy/cdl-docker:lastest
+    #user: ${FIXUID:-0}:${FIXGID:-0}
     volumes:
-      - /path/to/AppData:/cyberdrop-dl/AppData
-      - /path/to/Downloads:/cyberdrop-dl/Downloads
-    restart: no
+      - ./AppData:/cyberdrop-dl/AppData
+      - ./Downloads:/cyberdrop-dl/Downloads
+    environment:
+      - TZ=America/Vancouver
+      - SCHEDULE=ON
+      - TIME=15 */6 * * *
+      - SETUP=no
+    #restart: no
     stdin_open: true
     tty: true
-    # You can override the default command by changing the following line
-    command: ["cyberdrop-dl"]
 ```
 
-## Docker-Compose configuration for NAS support
 
-```yaml
-version: '3'
-
-services:
-  cdl-docker:
-    container_name: cdl-docker
-    image: ne0lith/cdl-docker:latest
-    # this allows us to use this on a nas, even though it is unsupported
-    # downside is your cyberdrop.db file has to remain local to the container host
-    volumes:
-      - /path/to/local/AppData/Cache:/cyberdrop-dl/AppData/Cache
-      - /path/to/nas/Appdata/Configs:/cyberdrop-dl/AppData/Configs
-      - /path/to/nas/Downloads:/cyberdrop-dl/Downloads
-    restart: no
-    stdin_open: true
-    tty: true
-    # You can override the default command by changing the following line
-    command: ["cyberdrop-dl"]
-```
 
 ## Running as a different user
 
@@ -72,13 +54,3 @@ In situations where you need the daemon to be run as a different user, specify a
 
 - In `docker run` commands, you can specify the user like this: `--user 1000:1000`
 - In `docker-compose.yml` files, you can specify the user like this: `user: ${FIXUID:-1000}:${FIXGID:-1000}`
-
-## Web TTY
-
-Support for headless operation with UI via the web is available via [gotty](https://github.com/sorenisanerd/gotty). Configuration via env, most common options:
-
-- `GOTTY=true` to enable
-- `GOTTY_PORT=6969`
-- `GOTTY_CREDENTIAL=user:pass`
-
-See [gotty docs](https://github.com/sorenisanerd/gotty/#options) for additional options, including tls.
